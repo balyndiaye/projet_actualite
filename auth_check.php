@@ -1,11 +1,21 @@
 <?php
 session_start();
 
-// Si la variable de session 'login' n'existe pas, cela signifie que
-// l'utilisateur n'est pas passé par la page de connexion.
-if (!isset($_SESSION['login'])) {
-    // On le redirige immédiatement vers la page de connexion
-    header('Location: connexion.php');
+// 1. Vérification de la connexion globale
+// On vérifie si le rôle existe (ce qui prouve que l'utilisateur est connecté)
+if (!isset($_SESSION['role'])) {
+    // On remonte d'un dossier (../) pour trouver la page de connexion
+    header('Location: ../connexion.php');
     exit();
+} 
+
+// 2. Vérification du niveau de droits (si la page demande un rôle spécifique)
+if (isset($role_requis)) {
+    // Si l'utilisateur n'a pas le rôle demandé ET n'est pas administrateur
+    if ($_SESSION['role'] !== $role_requis && $_SESSION['role'] !== 'administrateur') {
+        // On le renvoie à l'accueil avec un message d'erreur
+        header("Location: ../index.php?erreur=acces_refuse");
+        exit();
+    }
 }
 ?>
