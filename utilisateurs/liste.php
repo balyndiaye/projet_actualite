@@ -1,46 +1,33 @@
 <?php
-// On inclut la sécurité (seul un admin devrait voir ça, mais on commence par la base)
-session_start();
-require_once '../config/db.php'; // Note le ../ pour remonter d'un dossier
+$role_requis = 'administrateur'; 
+include '../config/auth_check.php'; 
+require_once '../config/db.php';
+include '../entete.php';
 
-// On récupère tous les utilisateurs
-$stmt = $pdo->query("SELECT id, login, role FROM utilisateurs");
-$users = $stmt->fetchAll();
+$users = $pdo->query("SELECT id, login, role FROM utilisateurs")->fetchAll();
 ?>
-
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Liste des utilisateurs</title>
-    <style>
-        table { border-collapse: collapse; width: 100%; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        th { background-color: #f2f2f2; }
-    </style>
-</head>
-<body>
+<div class="container">
     <h1>Gestion des utilisateurs</h1>
-    <a href="../index.php">Retour à l'accueil</a>
-    <br><br>
-
-    <table>
+    <table border="1" width="100%">
         <thead>
             <tr>
-                <th>ID</th>
-                <th>Login (Pseudo)</th>
-                <th>Rôle</th>
+                <th>ID</th><th>Pseudo</th><th>Rôle</th><th>Actions</th>
             </tr>
         </thead>
         <tbody>
             <?php foreach ($users as $u): ?>
             <tr>
-                <td><?php echo $u['id']; ?></td>
-                <td><?php echo htmlspecialchars($u['login']); ?></td>
-                <td><?php echo htmlspecialchars($u['role']); ?></td>
+                <td><?= $u['id'] ?></td>
+                <td><?= htmlspecialchars($u['login']) ?></td>
+                <td><strong><?= $u['role'] ?></strong></td>
+                <td>
+                    <?php if ($u['id'] != $_SESSION['id_user']): ?>
+                        <a href="modifier_role.php?id=<?= $u['id'] ?>&role=editeur">Rendre Éditeur</a> |
+                        <a href="supprimer_user.php?id=<?= $u['id'] ?>" onclick="return confirm('Supprimer ?')">Supprimer</a>
+                    <?php endif; ?>
+                </td>
             </tr>
             <?php endforeach; ?>
         </tbody>
     </table>
-</body>
-</html>
+</div>
