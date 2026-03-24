@@ -1,13 +1,14 @@
 <?php
+define('URL_BASE', '/projet_actualite/');
 // On définit les paramètres de connexion
 $host = 'localhost';
-$dbname = 'site_actualite';
+$dbname = 'projet_actualite';
 $user = 'root';
 $pass = ''; // Vide par défaut sur XAMPP Windows
 
 try {
     // Création de l'objet PDO
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $pass);
+    $pdo = new PDO("mysql:host=$host;port=3307;dbname=$dbname;charset=utf8", $user, $pass);
     
     // On active la gestion des erreurs pour le développement
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

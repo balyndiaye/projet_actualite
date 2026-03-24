@@ -1,82 +1,73 @@
 <?php
-// 1. Inclusion de la connexion à la base de données (Fichier créé par le Dév A)
-// On utilise require_once car sans BDD, la page ne peut pas afficher d'articles
-require_once 'config/db.php'; 
+session_start();
+require_once 'config/db.php';
 
-// 2. Gestion de la pagination
-$articlesParPage = 5; // Le prof demande une pagination, on fixe à 5 articles
-$pageActuelle = isset($_GET['p']) ? (int)$_GET['p'] : 1;
-if ($pageActuelle <= 0) $pageActuelle = 1;
-$offset = ($pageActuelle - 1) * $articlesParPage;
+// 1. RÉCUPÉRATION DES ARTICLES AVEC LEURS CATÉGORIES
+$sql = "SELECT articles.*, categories.nom AS categorie_nom 
+        FROM articles 
+        LEFT JOIN categories ON articles.id_categorie = categories.id 
+        ORDER BY articles.date_creation DESC";
 
-// 3. Récupération des articles avec leur catégorie
-try {
-    // On récupère les articles du plus récent au plus ancien
-    $query = "SELECT a.*, c.libelle as categorie_nom 
-              FROM articles a 
-              JOIN categories c ON a.id_categorie = c.id 
-              ORDER BY a.date_publication DESC 
-              LIMIT :limit OFFSET :offset";
-    
-    $stmt = $pdo->prepare($query);
-    $stmt->bindValue(':limit', $articlesParPage, PDO::PARAM_INT);
-    $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
-    $stmt->execute();
-    $articles = $stmt->fetchAll();
-} catch (PDOException $e) {
-    $erreur = "Erreur lors du chargement des articles.";
-}
+$articles = $pdo->query($sql)->fetchAll();
 
-// 4. Inclusion de l'entête et du menu (Tes fichiers de structure)
 include 'entete.php';
 include 'menu.php';
 ?>
 
-<main class="container">
-    <h2 style="color: #671E30; border-bottom: 2px solid #CFA65B; padding-bottom: 10px;">
-        Dernières Actualités
-    </h2>
+<main class="container" style="margin-top: 30px; font-family: 'Segoe UI', sans-serif;">
+    <h1 style="text-align: center; color: #2c3e50; margin-bottom: 40px; border-bottom: 3px solid #3922e6; display: inline-block; padding-bottom: 10px;">
+           Dernières Actualités
+    </h1>
 
-    <?php if (isset($erreur)): ?>
-        <p class="error"><?php echo $erreur; ?></p>
-    <?php elseif (empty($articles)): ?>
-        <p>Aucun article n'est disponible pour le moment.</p>
-    <?php else: ?>
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px;">
         
-        <?php foreach ($articles as $article): ?>
-            <article class="article-card">
-                <h3>
-                    <a href="article_detail.php?id=<?php echo $article['id']; ?>" style="color: #671E30; text-decoration: none;">
-                        <?php echo htmlspecialchars($article['titre']); ?>
-                    </a>
-                </h3>
-                <p style="font-size: 0.8em; color: #666;">
-                    Publié le <?php echo date('d/m/Y', strtotime($article['date_publication'])); ?> 
-                    dans la catégorie <strong><?php echo htmlspecialchars($article['categorie_nom']); ?></strong>
-                </p>
-                <p>
-                    <?php echo htmlspecialchars($article['description_courte']); ?>
-                </p>
-                <a href="article_detail.php?id=<?php echo $article['id']; ?>" class="btn">Lire la suite</a>
-            </article>
-        <?php endforeach; ?>
+        <?php if (count($articles) > 0): ?>
+            <?php foreach ($articles as $a): ?>
+                <article style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.3s;">
+                    
+                    <div style="height: 200px; overflow: hidden; background: #eee;">
+                        <?php if (!empty($a['image'])): ?>
+                            <img src="uploads/<?= htmlspecialchars($a['image']) ?>" 
+                                 alt="<?= htmlspecialchars($a['titre']) ?>" 
+                                 style="width: 100%; height: 100%; object-fit: cover;">
+                        <?php else: ?>
+                            <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #999;">
+                                 Aucune image
+                            </div>
+                        <?php endif; ?>
+                    </div>
 
-        <div class="pagination" style="margin-top: 30px; text-align: center;">
-            <?php if ($pageActuelle > 1): ?>
-                <a href="index.php?p=<?php echo $pageActuelle - 1; ?>" class="btn">« Précédent</a>
-            <?php endif; ?>
-            
-            <span style="margin: 0 15px;">Page <?php echo $pageActuelle; ?></span>
-            
-            <?php if (count($articles) == $articlesParPage): ?>
-                <a href="index.php?p=<?php echo $pageActuelle + 1; ?>" class="btn">Suivant »</a>
-            <?php endif; ?>
-        </div>
+                    <div style="padding: 20px;">
+                        <span style="background: #3922e6; color: white; padding: 4px 10px; border-radius: 20px; font-size: 0.75em; font-weight: bold; text-transform: uppercase;">
+                            <?= htmlspecialchars($a['categorie_nom']) ?>
+                        </span>
 
-    <?php endif; ?>
+                        <h2 style="margin: 15px 0 10px; font-size: 1.4em; color: #2c3e50;">
+                            <?= htmlspecialchars($a['titre']) ?>
+                        </h2>
+
+                        <p style="color: #7f8c8d; font-size: 0.95em; line-height: 1.6; margin-bottom: 20px;">
+                            <?= substr(htmlspecialchars($a['contenu']), 0, 120) ?>...
+                        </p>
+
+                        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #eee; padding-top: 15px;">
+                            <span style="font-size: 0.8em; color: #bdc3c7;">
+                                📅 <?= date('d/m/Y', strtotime($a['date_creation'])) ?>
+                            </span>
+                            <a href="article_detail.php?id=<?= $a['id'] ?>" style="color: #3922e6; text-decoration: none; font-weight: bold; font-size: 0.9em;">
+                                Lire la suite →
+                            </a>
+                        </div>
+                    </div>
+                </article>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <p style="text-align: center; grid-column: 1 / -1; color: #7f8c8d; font-style: italic;">
+                Aucun article n'a été publié pour le moment.
+            </p>
+        <?php endif; ?>
+
+    </div>
 </main>
 
-<?php
-// 6. Inclusion du pied de page
-include 'footer.php';
-?>
+<?php include 'footer.php'; ?>

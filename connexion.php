@@ -1,28 +1,47 @@
 <?php
-session_start(); // On démarre la session en haut de page
-require_once 'config/db.php'; // On inclut la connexion $pdo
+// 1. Démarrage de la session
+session_start();
+
+// 2. Affichage des erreurs (Utile pour le développement)
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+// 3. Connexion à la base de données
+// Assure-toi que le chemin vers db.php est correct
+require_once 'config/db.php';
+
+$erreur = "";
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // On récupère les variables du formulaire (login et password)
-    $login = $_POST['login'];
+    // On récupère et on nettoie les saisies
+    $login = trim($_POST['login']);
     $password = $_POST['password'];
 
-    // On prépare la requête avec les bons noms de colonnes
+    // 4. Recherche de l'utilisateur par son login
     $stmt = $pdo->prepare("SELECT * FROM utilisateurs WHERE login = ?");
     $stmt->execute([$login]);
     $user = $stmt->fetch();
 
-    // Vérification avec password_verify
-    if ($user && password_verify($password, $user['password'])) {
-        // On stocke les variables en session (conforme à ta liste)
-        $_SESSION['id_user'] = $user['id'];
-        $_SESSION['login'] = $user['login'];
-        $_SESSION['role'] = $user['role']; // visiteur, editeur ou administrateur
+    if ($user) {
+        // 5. VÉRIFICATION DU MOT DE PASSE HACHÉ
+        // Cette fonction compare le texte clair ($password) avec le hash ($user['password'])
+        if (password_verify($password, $user['password'])) {
+            
+            // Connexion réussie : on remplit la session
+            $_SESSION['id_user'] = $user['id'];
+            $_SESSION['login'] = $user['login'];
+            $_SESSION['role'] = $user['role'];
 
-        header('Location: index.php'); // Redirection vers l'accueil
-        exit();
+            // Redirection vers la page d'accueil
+            header('Location: index.php');
+            exit();
+        } else {
+            // Le hash ne correspond pas au mot de passe saisi
+            $erreur = "❌ Mot de passe incorrect.";
+        }
     } else {
-        $erreur = "Identifiants incorrects !";
+        // Aucun utilisateur trouvé avec ce login
+        $erreur = "❌ L'utilisateur '$login' n'existe pas.";
     }
 }
 ?>
@@ -31,17 +50,43 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Connexion</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion - ESP NEWS</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .login-card { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
+        h2 { text-align: center; color: #2c3e50; margin-bottom: 30px; border-bottom: 4px solid #3498db; padding-bottom: 10px; display: inline-block; width: 100%; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: bold; color: #34495e; }
+        input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
+        button { width: 100%; padding: 14px; background: #3498db; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: background 0.3s; }
+        button:hover { background: #2980b9; }
+        .error-msg { background: #f8d7da; color: #721c24; padding: 12px; border-radius: 8px; border: 1px solid #f5c6cb; margin-bottom: 20px; text-align: center; font-size: 14px; }
+    </style>
 </head>
 <body>
-    <form method="POST">
-        <h2>Se connecter</h2>
-        <?php if (isset($erreur)) echo "<p style='color:red;'>$erreur</p>"; ?>
-        
-        <input type="text" name="login" placeholder="Login" required><br>
-        <input type="password" name="password" placeholder="Mot de passe" required><br>
-        
-        <button type="submit">Connexion</button>
-    </form>
+
+    <div class="login-card">
+        <h2>Connexion</h2>
+
+        <?php if ($erreur): ?>
+            <div class="error-msg"><?= $erreur ?></div>
+        <?php endif; ?>
+
+        <form method="POST">
+            <div class="form-group">
+                <label>Nom d'utilisateur</label>
+                <input type="text" name="login" placeholder="Ex: login" required autofocus>
+            </div>
+
+            <div class="form-group">
+                <label>Mot de passe</label>
+                <input type="password" name="password" placeholder="••••••••" required>
+            </div>
+
+            <button type="submit">Se connecter</button>
+        </form>
+    </div>
+
 </body>
 </html>

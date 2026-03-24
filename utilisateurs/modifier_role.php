@@ -1,11 +1,25 @@
 <?php
-$role_requis = 'administrateur';
-include '../config/auth_check.php';
+session_start();
 require_once '../config/db.php';
 
-if (isset($_GET['id']) && isset($_GET['role'])) {
-    $stmt = $pdo->prepare("UPDATE utilisateurs SET role = ? WHERE id = ?");
-    $stmt->execute([$_GET['role'], $_GET['id']]);
+// 1. Sécurité : Seul un admin connecté peut modifier des rôles
+if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+    header('Location: ../index.php');
+    exit();
 }
-header("Location: listes.php");
+
+// 2. Vérification des paramètres reçus dans l'URL
+if (isset($_GET['id']) && isset($_GET['role'])) {
+    $id_a_modifier = $_GET['id'];
+    $nouveau_role = $_GET['role'];
+
+    // 3. Empêcher de modifier son propre compte (pour ne pas s'enlever ses droits d'admin)
+    if ($id_a_modifier != $_SESSION['id_user']) {
+        $stmt = $pdo->prepare("UPDATE utilisateurs SET role = ? WHERE id = ?");
+        $stmt->execute([$nouveau_role, $id_a_modifier]);
+    }
+}
+
+// 4. Redirection immédiate vers la liste pour voir le changement
+header("Location: liste.php");
 exit();

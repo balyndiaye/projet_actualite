@@ -1,64 +1,69 @@
 <?php 
-// Démarrer la session si elle n'existe pas déjà
-if (session_status() === PHP_SESSION_NONE) session_start(); 
-?>
-<nav>
-    <a href="index.php">Accueil</a>
-    
-    <?php if(isset($_SESSION['role'])): ?>
-        <a href="articles/liste.php">Gérer Articles</a>
-        <a href="categories/liste.php">Catégories</a>
-        
-        <?php if($_SESSION['role'] == 'administrateur'): ?>
-            <a href="utilisateurs/liste.php">Gérer Utilisateurs</a>
-        <?php endif; ?>
-        
-        <a href="deconnexion.php" style="color:red;">Déconnexion (<?php echo $_SESSION['login']; ?>)</a>
-        
-    <?php else: ?>
-        <a href="connexion.php">Connexion</a>
-    <?php endif; ?>
-</nav>
+// 1. Démarrage de la session
+if (session_status() === PHP_SESSION_NONE) {
+    session_start(); 
+}
 
-<div class="container"> ```
+// 2. Détermination du chemin de base pour les LIENS HTML (href, src)
+if (!defined('URL_BASE')) {
+    $current_dir = basename(dirname($_SERVER['PHP_SELF']));
+    $base = ($current_dir == 'articles' || $current_dir == 'categories' || $current_dir == 'utilisateurs') ? '../' : './';
+    define('URL_BASE', $base);
+}
 
----
+// 3. CONNEXION DB AVEC CHEMIN ABSOLU (Pour éviter l'erreur Failed to open stream)
+// On définit la racine du projet sur ton disque dur
+$root_path = __DIR__; 
+require_once $root_path . '/config/db.php';
 
-### 4. La Page d'Accueil (`index.php`)
-[cite_start]Elle assemble les morceaux et affiche la liste des articles avec pagination [cite: 52-74].
-
-```php
-<?php
-// Inclusion des fichiers de structure
-require_once 'config/db.php'; // Fichier du Dév A
-include 'entete.php';
-include 'menu.php';
-
-// Logique de pagination simple
-$page = isset($_GET['p']) ? (int)$_GET['p'] : 1;
-$parPage = 5;
-$offset = ($page - 1) * $parPage;
-
-// Requête SQL pour les articles
-$stmt = $pdo->query("SELECT a.*, c.libelle as cat FROM articles a 
-                     LEFT JOIN categories c ON a.id_categorie = c.id 
-                     ORDER BY date_publication DESC LIMIT $parPage OFFSET $offset");
-$articles = $stmt->fetchAll();
+// 4. Récupération des catégories pour le menu
+try {
+    $stmt_nav = $pdo->query("SELECT * FROM categories ORDER BY nom ASC");
+    $nav_categories = $stmt_nav->fetchAll();
+} catch (PDOException $e) {
+    $nav_categories = [];
+}
 ?>
 
-<h2>Dernières Actualités</h2>
+<header class="site-header">
+    <div class="container header-inner">
+        <a href="<?php echo URL_BASE; ?>index.php" class="logo">ESP NEWS<span>.</span></a>
+        
+        <form action="<?php echo URL_BASE; ?>index.php" method="GET" class="search-container">
+            <input type="text" name="search" placeholder="Recherche..." class="search-input">
+            <button type="submit" style="border:none; background:none; cursor:pointer;">🔍</button>
+        </form>
 
-<?php foreach($articles as $a): ?>
-    <div class="article-card">
-        <h3><?php echo htmlspecialchars($a['titre']); ?></h3> <p><em>Publié le : <?php echo $a['date_publication']; ?> | Catégorie : <?php echo $a['cat']; ?></em></p>
-        <p><?php echo htmlspecialchars($a['description_courte']); ?></p>
-        <a href="article_detail.php?id=<?php echo $a['id']; ?>">Lire la suite</a>
+        <nav class="main-nav">
+            <ul>
+                <li><a href="<?php echo URL_BASE; ?>index.php">Accueil</a></li>
+
+                <?php if(isset($_SESSION['login'])): ?>
+                    <li><a href="<?php echo URL_BASE; ?>articles/listes.php">Gérer Articles</a></li>
+
+                    <?php if(isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
+                        <li><a href="<?php echo URL_BASE; ?>categories/listes.php">Catégories</a></li>
+                        <li><a href="<?php echo URL_BASE; ?>utilisateurs/liste.php">Utilisateurs</a></li>
+                    <?php endif; ?>
+
+                    <li><a href="<?php echo URL_BASE; ?>deconnexion.php" style="color:var(--color-accent); font-weight:bold;">Quitter</a></li>
+                
+                <?php else: ?>
+                    <li><a href="<?php echo URL_BASE; ?>connexion.php">Connexion</a></li>
+                <?php endif; ?>
+            </ul>
+        </nav>
     </div>
-<?php endforeach; ?>
+</header>
 
-<div class="pagination">
-    <a href="index.php?p=<?php echo max(1, $page-1); ?>" class="btn">Précédent</a>
-    <a href="index.php?p=<?php echo $page+1; ?>" class="btn">Suivant</a>
+<div class="category-nav">
+    <div class="container category-list">
+        <?php if (!empty($nav_categories)): ?>
+            <?php foreach($nav_categories as $c): ?>
+                <a href="<?php echo URL_BASE; ?>index.php?cat=<?php echo urlencode($c['nom']); ?>" class="category-link">
+                    <?php echo htmlspecialchars($c['nom']); ?>
+                </a>
+            <?php endforeach; ?>
+        <?php endif; ?>
+    </div>
 </div>
-
-<?php include 'footer.php'; ?>

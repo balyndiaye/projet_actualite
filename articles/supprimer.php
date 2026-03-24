@@ -1,45 +1,45 @@
 <?php
-// 1. On autorise l'entrée à partir du rang 'editeur'
-$role_requis = 'editeur'; 
-include '../config/auth_check.php';
+session_start();
 require_once '../config/db.php';
 
-// On vérifie si l'ID de l'article est bien présent dans l'URL
+// 1. Sécurité : Vérifier si l'utilisateur est connecté
+if (!isset($_SESSION['login'])) {
+    header('Location: ../connexion.php');
+    exit();
+}
+
 if (isset($_GET['id'])) {
     $id_article = $_GET['id'];
 
-    // 2. ÉTAPE DE VÉRIFICATION : On va chercher qui est l'auteur de cet article
-    $query = $pdo->prepare("SELECT id_auteur FROM articles WHERE id = ?");
+    // 2. VÉRIFICATION : On récupère l'id_utilisateur (et pas id_auteur)
+    $query = $pdo->prepare("SELECT id_utilisateur FROM articles WHERE id = ?");
     $query->execute([$id_article]);
     $article = $query->fetch();
 
-    // Si l'article n'existe pas, on arrête tout
     if (!$article) {
-        header("Location: ../index.php?err=article_inexistant");
+        header("Location: listes.php?err=article_inexistant");
         exit();
     }
 
-    // 3. LA LOGIQUE DE DROITS :
-    // On autorise la suppression SI :
-    // - L'utilisateur est 'administrateur' 
-    // - OU SI l'id_auteur de l'article correspond à l'ID de la personne connectée
-    if ($_SESSION['role'] === 'administrateur' || $article['id_auteur'] == $_SESSION['id_user']) {
+    // 3. LOGIQUE DE DROITS :
+    // - On utilise 'admin' (le rôle dans ta base) au lieu de 'administrateur'
+    // - On compare avec id_utilisateur
+    if ($_SESSION['role'] === 'admin' || $article['id_utilisateur'] == $_SESSION['id_user']) {
         
         $delete = $pdo->prepare("DELETE FROM articles WHERE id = ?");
         $delete->execute([$id_article]);
         
-        // Succès !
-        header("Location: ../index.php?msg=article_supprime");
+        // Redirection vers la liste de gestion
+        header("Location: listes.php?msg=article_supprime");
         exit();
 
     } else {
-        // TENTATIVE DE FRAUDE : L'éditeur essaie de supprimer l'article d'un autre
-        header("Location: ../index.php?err=acces_refuse");
+        // Accès refusé si ce n'est pas son article
+        header("Location: listes.php?err=acces_refuse");
         exit();
     }
 } else {
-    // Pas d'ID fourni dans l'URL
-    header("Location: ../index.php");
+    header("Location: listes.php");
     exit();
 }
 ?>
