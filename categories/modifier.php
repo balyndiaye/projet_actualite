@@ -1,16 +1,17 @@
-<?php
+<?php 
 session_start();
 require_once '../config/db.php';
 
-// 1. SÉCURITÉ : On vérifie le rôle 'admin' (tel qu'écrit dans ta base)
-if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+// 1. SÉCURITÉ : On autorise l'admin ET l'editeur
+if (!isset($_SESSION['role']) || ($_SESSION['role'] !== 'admin' && $_SESSION['role'] !== 'editeur')) {
     header('Location: ../index.php?err=acces_refuse');
     exit();
 }
 
 // 2. RÉCUPÉRATION de la catégorie
-if (isset($_GET['id'])) {
-    $id = $_GET['id'];
+$id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+
+if ($id > 0) {
     $stmt = $pdo->prepare("SELECT * FROM categories WHERE id = ?");
     $stmt->execute([$id]);
     $cat = $stmt->fetch();
@@ -26,18 +27,28 @@ if (isset($_GET['id'])) {
 
 // 3. TRAITEMENT de la modification
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // CORRECTION : On utilise 'nom' car c'est le nom dans ta table SQL
-    $nouveau_nom = $_POST['nom_categorie']; 
+    $nouveau_nom = trim($_POST['nom_categorie']); 
     
-    $update = $pdo->prepare("UPDATE categories SET nom = ? WHERE id = ?");
-    
-    try {
-        $update->execute([$nouveau_nom, $id]);
-        // Attention : vérifie si ton fichier s'appelle liste.php ou listes.php
-        header("Location: listes.php?msg=success"); 
-        exit();
-    } catch (PDOException $e) {
-        $erreur = "Erreur : " . $e->getMessage();
+    if (!empty($nouveau_nom)) {
+        try {
+            // Vérifier si le nouveau nom n'est pas déjà utilisé par UNE AUTRE catégorie
+            $check = $pdo->prepare("SELECT id FROM categories WHERE LOWER(nom) = LOWER(?) AND id != ?");
+            $check->execute([$nouveau_nom, $id]);
+            
+            if ($check->rowCount() > 0) {
+                $erreur = "Ce nom de catégorie est déjà utilisé.";
+            } else {
+                $update = $pdo->prepare("UPDATE categories SET nom = ? WHERE id = ?");
+                $update->execute([$nouveau_nom, $id]);
+                
+                header("Location: listes.php?msg=success"); 
+                exit();
+            }
+        } catch (PDOException $e) {
+            $erreur = "Erreur lors de la mise à jour.";
+        }
+    } else {
+        $erreur = "Le nom ne peut pas être vide.";
     }
 }
 
@@ -45,25 +56,29 @@ include '../entete.php';
 include '../menu.php';
 ?>
 
-<div class="container" style="margin-top: 40px; max-width: 600px; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
-    <h2 style="color: var(--color-primary); border-bottom: 2px solid var(--color-accent); padding-bottom: 10px; margin-bottom: 20px;">
-        Modifier la catégorie
+<div class="container" style="margin-top: 40px; max-width: 600px; background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+    <h2 style="color: #2c3e50; border-left: 5px solid #3922e6; padding-left: 15px; margin-bottom: 30px; font-size: 1.8em;">
+        ✏️ Modifier la catégorie
     </h2>
 
     <?php if(isset($erreur)): ?>
-        <p style="color: red;"><?= $erreur ?></p>
+        <div style="color: #721c24; background: #f8d7da; padding: 15px; border-radius: 8px; border: 1px solid #f5c6cb; margin-bottom: 25px;">
+            ⚠️ <?= $erreur ?>
+        </div>
     <?php endif; ?>
 
     <form method="POST">
-        <label style="font-weight:bold; display:block; margin-bottom:10px;">Nom de la catégorie :</label>
-        <input type="text" name="nom_categorie" value="<?= htmlspecialchars($cat['nom']) ?>" required 
-               style="width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 5px; margin-bottom: 20px; font-size: 16px;">
+        <div style="margin-bottom: 25px;">
+            <label style="font-weight:bold; display:block; margin-bottom:10px; color: #34495e;">Nom actuel de la catégorie :</label>
+            <input type="text" name="nom_categorie" value="<?= htmlspecialchars($cat['nom']) ?>" required 
+                   style="width: 100%; padding: 15px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; outline: none; border-color: #3922e6;">
+        </div>
         
-        <div style="display: flex; gap: 10px;">
-            <button type="submit" style="background: var(--color-primary); color: white; padding: 12px 25px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; flex: 2;">
-                Mettre à jour
+        <div style="display: flex; gap: 15px;">
+            <button type="submit" style="background: #3922e6; color: white; padding: 15px 30px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; flex: 2; font-size: 1.1em;">
+                💾 Enregistrer les modifications
             </button>
-            <a href="listes.php" style="background: #6c757d; color: white; padding: 12px 20px; border-radius: 5px; text-decoration: none; text-align: center; flex: 1;">
+            <a href="listes.php" style="background: #f1f1f1; color: #555; padding: 15px 25px; border-radius: 8px; text-decoration: none; text-align: center; flex: 1; font-weight: 600; font-size: 1.1em;">
                 Annuler
             </a>
         </div>

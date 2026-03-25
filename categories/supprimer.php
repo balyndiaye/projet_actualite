@@ -2,31 +2,41 @@
 session_start();
 require_once '../config/db.php';
 
-// 1. SÉCURITÉ : Seul l'admin peut supprimer une catégorie
-if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+// 1. SÉCURITÉ : On autorise l'admin ET l'editeur
+if (!isset($_SESSION['role']) || ($_SESSION['role'] !== 'admin' && $_SESSION['role'] !== 'editeur')) {
     header('Location: ../index.php?err=acces_refuse');
     exit();
 }
 
 if (isset($_GET['id'])) {
-    $id = $_GET['id'];
+    $id = (int)$_GET['id'];
 
     try {
-        // 2. TENTATIVE DE SUPPRESSION
+        // 2. VÉRIFICATION AVANT SUPPRESSION (Sécurité Backend)
+        // On vérifie si des articles sont liés à cette catégorie
+        $check = $pdo->prepare("SELECT COUNT(*) FROM articles WHERE id_categorie = ?");
+        $check->execute([$id]);
+        $count = $check->fetchColumn();
+
+        if ($count > 0) {
+            // Si la catégorie contient des articles, on refuse la suppression
+            header("Location: listes.php?err=cat_utilisee");
+            exit();
+        }
+
+        // 3. TENTATIVE DE SUPPRESSION
         $stmt = $pdo->prepare("DELETE FROM categories WHERE id = ?");
         $stmt->execute([$id]);
         
-        // Redirection vers la liste (vérifie bien s'il y a un "s" ou pas à ton fichier)
-       header("Location: listes.php?msg=cat_supprimee");
+        header("Location: listes.php?msg=cat_supprimee");
         exit();
 
     } catch (PDOException $e) {
-        // 3. GESTION D'ERREUR : Si la catégorie est liée à des articles (Contrainte de clé étrangère)
-        // On ne peut pas supprimer une catégorie qui contient encore des articles
-        header("Location: liste.php?err=cat_utilisee");
+        // En cas d'erreur SQL imprévue
+        header("Location: listes.php?err=sql_error");
         exit();
     }
 } else {
-    header("Location: liste.php");
+    header("Location: listes.php");
     exit();
 }

@@ -1,18 +1,19 @@
 <?php
-// 1. Connexion à la base de données
+// 1. Connexion à la base de données et session
 session_start();
 require_once 'config/db.php';
 
-// 2. Récupération de l'identifiant
+// 2. Récupération de l'identifiant de l'article depuis l'URL
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 $article = false;
 
 if ($id > 0) {
-    // 3. REQUÊTE CORRIGÉE : on utilise 'nom' au lieu de 'libelle' 
-    // et 'id_categorie' au lieu de 'categorie_id' (si c'est ton cas)
-    $sql = "SELECT a.*, c.nom as cat_nom 
+    // 3. REQUÊTE SQL : On récupère l'article, sa catégorie et le login de l'auteur
+    // On utilise 'u.login' car c'est le nom de la colonne dans ta table utilisateurs
+    $sql = "SELECT a.*, c.nom as cat_nom, u.login as auteur_nom 
             FROM articles a 
             LEFT JOIN categories c ON a.id_categorie = c.id 
+            LEFT JOIN utilisateurs u ON a.id_utilisateur = u.id 
             WHERE a.id = ?";
     
     $stmt = $pdo->prepare($sql);
@@ -20,7 +21,7 @@ if ($id > 0) {
     $article = $stmt->fetch();
 }
 
-// Si l'article n'existe pas, retour à l'accueil
+// Si l'article n'existe pas ou ID invalide, retour à l'accueil
 if (!$article) {
     header('Location: index.php');
     exit();
@@ -40,6 +41,7 @@ include 'menu.php';
         <?php if (!empty($article['image'])): ?>
             <div style="width: 100%; max-height: 450px; overflow: hidden; border-radius: 10px; margin-bottom: 30px;">
                 <img src="uploads/<?= htmlspecialchars($article['image']) ?>" 
+                     alt="<?= htmlspecialchars($article['titre']) ?>"
                      style="width: 100%; height: auto; object-fit: cover;">
             </div>
         <?php endif; ?>
@@ -50,18 +52,8 @@ include 'menu.php';
 
         <div style="background: #f8f9fa; padding: 15px; border-left: 5px solid #3922e6; margin-bottom: 30px; border-radius: 0 8px 8px 0;">
             <p style="margin: 0; font-size: 0.95em; color: #666;">
-                 Publié le <strong><?= date('d/m/Y', strtotime($article['date_creation'])) ?></strong> 
+                 Publié le <strong><?= date('d/m/Y', strtotime($article['date_creation'])) ?></strong>
+                |  Par : <strong><?= htmlspecialchars($article['auteur_nom'] ?? 'Anonyme') ?></strong>
                 |  Catégorie : <span style="color: #3922e6; font-weight: bold;"><?= htmlspecialchars($article['cat_nom']) ?></span>
             </p>
         </div>
-
-        <div class="article-content" style="line-height: 1.8; font-size: 1.2em; color: #34495e; white-space: pre-line;">
-            <?= nl2br(htmlspecialchars($article['contenu'])) ?>
-        </div>
-
-    </article>
-</main>
-
-<div style="margin-bottom: 50px;"></div>
-
-<?php include 'footer.php'; ?>
