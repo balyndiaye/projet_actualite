@@ -58,12 +58,12 @@ include '../menu.php';
 
 <div class="container" style="margin-top: 40px; max-width: 600px; background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
     <h2 style="color: #2c3e50; border-left: 5px solid #3922e6; padding-left: 15px; margin-bottom: 30px; font-size: 1.8em;">
-        ✏️ Modifier la catégorie
+         Modifier la catégorie
     </h2>
 
     <?php if(isset($erreur)): ?>
         <div style="color: #721c24; background: #f8d7da; padding: 15px; border-radius: 8px; border: 1px solid #f5c6cb; margin-bottom: 25px;">
-            ⚠️ <?= $erreur ?>
+             <?= $erreur ?>
         </div>
     <?php endif; ?>
 
@@ -76,7 +76,7 @@ include '../menu.php';
         
         <div style="display: flex; gap: 15px;">
             <button type="submit" style="background: #3922e6; color: white; padding: 15px 30px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; flex: 2; font-size: 1.1em;">
-                💾 Enregistrer les modifications
+                 Enregistrer les modifications
             </button>
             <a href="listes.php" style="background: #f1f1f1; color: #555; padding: 15px 25px; border-radius: 8px; text-decoration: none; text-align: center; flex: 1; font-weight: 600; font-size: 1.1em;">
                 Annuler

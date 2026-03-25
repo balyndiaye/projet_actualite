@@ -1,15 +1,15 @@
 <?php
-// 1. DÉMARRAGE DE LA SESSION ET SÉCURITÉ
+// DÉMARRAGE DE LA SESSION ET SÉCURITÉ
 session_start();
 require_once '../config/db.php';
 
-// On vérifie si l'utilisateur est admin (on utilise 'admin' comme dans ta base)
+// On vérifie si l'utilisateur est admin
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     header('Location: ../index.php?err=acces_refuse');
     exit();
 }
 
-// 2. TRAITEMENT DU FORMULAIRE
+// TRAITEMENT DU FORMULAIRE
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $login = $_POST['login'];
     // Hachage du mot de passe pour la sécurité

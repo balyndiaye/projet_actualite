@@ -42,12 +42,12 @@ include '../menu.php';
 
 <div class="container" style="margin-top: 40px; max-width: 500px; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
     <h2 style="color: #2c3e50; border-bottom: 3px solid #3922e6; padding-bottom: 12px; margin-bottom: 25px; font-size: 1.6em;">
-         📁 Nouvelle Catégorie
+         Nouvelle Catégorie
     </h2>
 
     <?php if(isset($erreur)): ?>
         <div style="color: #721c24; background: #f8d7da; padding: 12px; border-radius: 6px; border: 1px solid #f5c6cb; margin-bottom: 20px; font-size: 0.95em;">
-            ⚠️ <?= $erreur ?>
+            <?= $erreur ?>
         </div>
     <?php endif; ?>
 

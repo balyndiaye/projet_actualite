@@ -1,18 +1,14 @@
-<?php
-// On définit le chemin de base dynamiquement si ce n'est pas déjà fait
-// Si on est dans un sous-dossier, on remonte d'un cran, sinon on reste à la racine
-$url_base = (basename(dirname($_SERVER['PHP_SELF'])) == 'articles' || basename(dirname($_SERVER['PHP_SELF'])) == 'utilisateurs' || basename(dirname($_SERVER['PHP_SELF'])) == 'categories') ? '../' : './';
-?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>ESP NEWS - L'actualité en continu</title>
-    <link rel="stylesheet" href="<?php echo $url_base; ?>css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESP NEWS | Portail d'Information</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { margin: 0; padding: 0; font-family: 'Inter', sans-serif; background-color: #fcfcfc; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+    </style>
 </head>
 <body>
-    <div style="background: var(--color-accent); color: white; padding: 8px 0; font-weight: bold;">
-        <div class="container">
-            <marquee>Bienvenue sur le nouveau portail ESP NEWS. Toute l'actualité de l'école en direct.</marquee>
-        </div>
-    </div>

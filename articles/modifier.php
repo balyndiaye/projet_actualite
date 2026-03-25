@@ -8,7 +8,10 @@ if (!isset($_SESSION['login'])) {
     exit();
 }
 
+// Récupération de l'article
+if (!isset($_GET['id'])) { header("Location: listes.php"); exit(); }
 $id = $_GET['id'];
+
 $stmt = $pdo->prepare("SELECT * FROM articles WHERE id = ?");
 $stmt->execute([$id]);
 $article = $stmt->fetch();
@@ -16,7 +19,6 @@ $article = $stmt->fetch();
 if (!$article) { die("Article introuvable."); }
 
 // 2. SÉCURITÉ : Un éditeur ne modifie que SES articles (sauf si admin)
-// Correction : 'admin' au lieu de 'administrateur' et 'id_utilisateur' au lieu de 'id_auteur'
 if ($_SESSION['role'] !== 'admin' && $article['id_utilisateur'] !== $_SESSION['id_user']) {
     header("Location: listes.php?erreur=non_autorise");
     exit();
@@ -24,50 +26,60 @@ if ($_SESSION['role'] !== 'admin' && $article['id_utilisateur'] !== $_SESSION['i
 
 // 3. Traitement du formulaire
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // On récupère les catégories pour être sûr du lien
     $update = $pdo->prepare("UPDATE articles SET titre = ?, contenu = ?, id_categorie = ? WHERE id = ?");
     $update->execute([$_POST['titre'], $_POST['contenu'], $_POST['id_categorie'], $id]);
     
-    // On redirige vers la liste de gestion pour voir le résultat
-    header("Location: listes.php");
+    header("Location: listes.php?success=modifie");
     exit();
 }
 
 include '../entete.php';
 include '../menu.php';
 
-// On récupère les catégories pour le menu déroulant
+// Récupération des catégories pour le menu déroulant
 $categories = $pdo->query("SELECT * FROM categories ORDER BY nom ASC")->fetchAll();
 ?>
 
-<div class="container" style="margin-top: 40px; max-width: 800px; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
-    <h2 style="color: var(--color-primary); border-bottom: 2px solid var(--color-accent); padding-bottom: 10px; margin-bottom: 20px;">
-        Modifier l'article
-    </h2>
+<div class="container" style="margin-top: 50px; margin-bottom: 50px; max-width: 900px; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); font-family: 'Inter', sans-serif;">
+    
+    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 30px; border-bottom: 2px solid #f0f0f0; padding-bottom: 20px;">
+        <div style="background: #6D071A; width: 10px; height: 35px; border-radius: 5px;"></div>
+        <h2 style="margin: 0; color: #333; font-size: 1.8rem; font-weight: 800;">Modifier l'article</h2>
+    </div>
 
     <form method="POST">
-        <label style="font-weight:bold; display:block; margin-bottom:5px;">Titre</label>
-        <input type="text" name="titre" value="<?= htmlspecialchars($article['titre']) ?>" required 
-               style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; margin-bottom: 20px;">
+        <div style="margin-bottom: 25px;">
+            <label style="font-weight: 700; display: block; margin-bottom: 8px; color: #555; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.5px;">Titre de l'actualité</label>
+            <input type="text" name="titre" value="<?= htmlspecialchars($article['titre']) ?>" required 
+                   style="width: 100%; padding: 15px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; outline: none; transition: 0.3s; box-sizing: border-box;" 
+                   onfocus="this.style.borderColor='#6D071A'">
+        </div>
 
-        <label style="font-weight:bold; display:block; margin-bottom:5px;">Catégorie</label>
-        <select name="id_categorie" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; margin-bottom: 20px;">
-            <?php foreach($categories as $c): ?>
-                <option value="<?= $c['id'] ?>" <?= ($c['id'] == $article['id_categorie']) ? 'selected' : '' ?>>
-                    <?= htmlspecialchars($c['nom']) ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
+        <div style="margin-bottom: 25px;">
+            <label style="font-weight: 700; display: block; margin-bottom: 8px; color: #555; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.5px;">Catégorie</label>
+            <select name="id_categorie" required 
+                    style="width: 100%; padding: 15px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; background-color: #f9f9f9; outline: none; box-sizing: border-box;">
+                <?php foreach($categories as $c): ?>
+                    <option value="<?= $c['id'] ?>" <?= ($c['id'] == $article['id_categorie']) ? 'selected' : '' ?>>
+                        <?= htmlspecialchars($c['nom']) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </div>
 
-        <label style="font-weight:bold; display:block; margin-bottom:5px;">Contenu</label>
-        <textarea name="contenu" rows="10" required 
-                  style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; margin-bottom: 20px; font-family: Arial;"><?= htmlspecialchars($article['contenu']) ?></textarea>
+        <div style="margin-bottom: 30px;">
+            <label style="font-weight: 700; display: block; margin-bottom: 8px; color: #555; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.5px;">Contenu de l'article</label>
+            <textarea name="contenu" rows="12" required 
+                      style="width: 100%; padding: 15px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; line-height: 1.6; outline: none; transition: 0.3s; font-family: Arial, sans-serif; box-sizing: border-box;"
+                      onfocus="this.style.borderColor='#6D071A'"><?= htmlspecialchars($article['contenu']) ?></textarea>
+        </div>
 
-        <div style="display: flex; gap: 10px;">
-            <button type="submit" style="background: var(--color-primary); color: white; padding: 12px 25px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; flex: 2;">
-                Enregistrer les modifications
+        <div style="display: flex; gap: 15px; align-items: center; border-top: 1px solid #eee; padding-top: 30px;">
+            <button type="submit" style="background: #6D071A; color: white; padding: 15px 35px; border: none; border-radius: 8px; font-weight: 800; font-size: 1rem; cursor: pointer; flex: 2; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; box-shadow: 0 4px 12px rgba(109, 7, 26, 0.3);">
+                <i class="fas fa-check-circle" style="margin-right: 8px;"></i> Enregistrer les modifications
             </button>
-            <a href="listes.php" style="background: #6c757d; color: white; padding: 12px 20px; border-radius: 5px; text-decoration: none; text-align: center; flex: 1;">
+            
+            <a href="listes.php" style="background: #f8f9fa; color: #666; padding: 15px 25px; border-radius: 8px; text-decoration: none; text-align: center; flex: 1; font-weight: 700; border: 1px solid #ddd; font-size: 0.9rem; transition: 0.2s;">
                 Annuler
             </a>
         </div>

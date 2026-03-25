@@ -23,7 +23,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         if (move_uploaded_file($_FILES['image']['tmp_name'], $chemin_destination)) {
             try {
-                // CORRECTION ICI : On utilise 'id_categorie' pour correspondre à ta base
                 $sql = "INSERT INTO articles (titre, contenu, image, id_categorie,id_utilisateur, date_creation) 
                         VALUES (?, ?, ?, ?, ?, NOW())";
                 $stmt = $pdo->prepare($sql);
@@ -42,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 
-// Récupération des catégories (Triées par le nom que l'on voit sur ta capture)
+
 $categories = $pdo->query("SELECT * FROM categories ORDER BY nom ASC")->fetchAll();
 
 include '../entete.php';
