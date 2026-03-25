@@ -1,49 +1,53 @@
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
-    <footer class="site-footer" style="background-color: var(--color-primary); color: #FFFFFF; padding: 60px 0 30px; margin-top: 50px;">
-        <div class="container" style="display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 40px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 40px;">
+<footer style="background-color: #1a1a1a; color: #ffffff; padding: 60px 0 30px; margin-top: 80px; font-family: 'Inter', sans-serif; border-top: 4px solid #6D071A;">
+        <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 25px; display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 50px;">
             
-            <div class="footer-col">
-                <div class="footer-logo" style="font-size: 2rem; font-weight: 900; color: #FFFFFF; margin-bottom: 15px;">
-                    ESP NEWS<span style="color: var(--color-accent);">.</span>
+            <div>
+                <div style="font-size: 1.6rem; font-weight: 900; margin-bottom: 20px; letter-spacing: -1px;">
+                    ESP NEWS<span style="color: #3922e6;">.</span>
                 </div>
-                <p style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 0.9rem; line-height: 1.6; color: #d1d1d1; max-width: 300px;">
-                    Le portail de référence pour l'actualité polytechnicienne et les innovations technologiques au Sénégal.
+                <p style="font-size: 0.9rem; line-height: 1.7; color: #999; max-width: 320px;">
+                    Le portail numérique dédié à l'actualité de l'École Supérieure Polytechnique et aux innovations technologiques au Sénégal.
                 </p>
-                <p style="margin-top: 15px; font-weight: 600; font-size: 0.85rem; color: #FFFFFF;">espnews.com</p>
+                <div style="margin-top: 25px; display: flex; gap: 15px;">
+                    <a href="#" style="color: #fff; opacity: 0.6; font-size: 1.2rem;"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" style="color: #fff; opacity: 0.6; font-size: 1.2rem;"><i class="fab fa-twitter"></i></a>
+                    <a href="#" style="color: #fff; opacity: 0.6; font-size: 1.2rem;"><i class="fab fa-linkedin-in"></i></a>
+                </div>
             </div>
 
-            <div class="footer-col">
-                <h4 style="font-family: 'Inter', sans-serif; text-transform: uppercase; font-size: 1rem; letter-spacing: 1px; margin-bottom: 25px; border-bottom: 2px solid var(--color-accent); display: inline-block; padding-bottom: 5px;">
-                    Liens Utiles
-                </h4>
-                <ul style="list-style: none; padding: 0; font-family: 'Segoe UI', Arial, sans-serif;">
-                    <li style="margin-bottom: 12px;"><a href="#" style="color: #d1d1d1; font-size: 0.9rem; transition: 0.3s;">À propos de nous</a></li>
-                    <li style="margin-bottom: 12px;"><a href="#" style="color: #d1d1d1; font-size: 0.9rem; transition: 0.3s;">Contact & Support</a></li>
-                    <li style="margin-bottom: 12px;"><a href="#" style="color: #d1d1d1; font-size: 0.9rem; transition: 0.3s;">Politique de confidentialité</a></li>
-                    <li style="margin-bottom: 12px;"><a href="#" style="color: #d1d1d1; font-size: 0.9rem; transition: 0.3s;">Conditions d'utilisation</a></li>
+            <div>
+                <h4 style="font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 25px; color: #6D071A;">Navigation</h4>
+                <ul style="list-style: none; padding: 0; margin: 0; line-height: 2.2;">
+                    <li><a href="index.php" style="color: #999; text-decoration: none; font-size: 0.9rem;">Accueil</a></li>
+                    <li><a href="#" style="color: #999; text-decoration: none; font-size: 0.9rem;">À propos</a></li>
+                    <li><a href="#" style="color: #999; text-decoration: none; font-size: 0.9rem;">Contact</a></li>
+                    <li><a href="#" style="color: #999; text-decoration: none; font-size: 0.9rem;">Mentions légales</a></li>
                 </ul>
             </div>
 
-            <div class="footer-col">
-                <h4 style="font-family: 'Inter', sans-serif; text-transform: uppercase; font-size: 1rem; letter-spacing: 1px; margin-bottom: 25px; border-bottom: 2px solid var(--color-accent); display: inline-block; padding-bottom: 5px;">
-                    Nous Suivre
-                </h4>
-                <div class="social-icons" style="display: flex; gap: 20px; margin-bottom: 25px;">
-                    <a href="#" style="color: #FFFFFF; font-size: 1.5rem; transition: 0.3s;" title="Facebook"><i class="fab fa-facebook"></i></a>
-                    <a href="#" style="color: #FFFFFF; font-size: 1.5rem; transition: 0.3s;" title="X (Twitter)"><i class="fab fa-x-twitter"></i></a>
-                    <a href="#" style="color: #FFFFFF; font-size: 1.5rem; transition: 0.3s;" title="Instagram"><i class="fab fa-instagram"></i></a>
-                </div>
-                <div style="font-family: 'Segoe UI', sans-serif; font-size: 0.85rem; color: #d1d1d1;">
-                    <p style="margin-bottom: 8px;"><i class="fas fa-envelope" style="margin-right: 10px; color: var(--color-accent);"></i> contact@espnews.com</p>
-                    <p><i class="fas fa-phone" style="margin-right: 10px; color: var(--color-accent);"></i> +221 33 864 51 39</p>
+            <div>
+                <h4 style="font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 25px; color: #6D071A;">Contact</h4>
+                <div style="color: #999; font-size: 0.9rem; line-height: 2;">
+                    <p style="margin-bottom: 10px;">
+                        <i class="fas fa-map-marker-alt" style="margin-right: 10px; color: #6D071A;"></i> 
+                        Dakar, Sénégal - Avenue Cheikh Anta Diop
+                    </p>
+                    <p style="margin-bottom: 10px;">
+                        <i class="fas fa-envelope" style="margin-right: 10px; color: #6D071A;"></i> 
+                        contact@espnews.sn
+                    </p>
+                    <p>
+                        <i class="fas fa-phone" style="margin-right: 10px; color: #6D071A;"></i> 
+                        +221 33 864 51 39
+                    </p>
                 </div>
             </div>
-
         </div>
 
-        <div class="footer-bottom" style="text-align: center; padding-top: 30px; font-family: 'Inter', sans-serif; font-size: 0.8rem; color: #999;">
-            <p>© <?php echo date('Y'); ?> <strong>ESPNEWS</strong>. Tous droits réservés. Actualité en temps réel au Sénégal.</p>
+        <div style="max-width: 1200px; margin: 50px auto 0; padding: 25px 25px 0; border-top: 1px solid #333; text-align: center;">
+            <p style="color: #666; font-size: 0.8rem; margin: 0;">
+                &copy; <?php echo date('Y'); ?> <strong>ESPNEWS</strong>. Plateforme d'actualité développée par Diarra.
+            </p>
         </div>
     </footer>
 </body>

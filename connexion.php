@@ -1,13 +1,13 @@
 <?php
-// 1. Démarrage de la session au tout début 
+// Démarrage de la session
 session_start();
 
-// 2. Affichage des erreurs pour le débuggage
+// Affichage des erreurs (Utile pour le développement)
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// 3. Connexion à la base de données [cite: 30, 35]
-require_once 'config/db.php'; 
+// onnexion à la base de données
+require_once 'config/db.php';
 
 $erreur = "";
 
@@ -16,36 +16,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $login = trim($_POST['login']);
     $password = $_POST['password'];
 
-    if (!empty($login) && !empty($password)) {
-        try {
-            // 4. Utilisation de requêtes préparées contre les injections SQL 
-            $stmt = $pdo->prepare("SELECT * FROM utilisateurs WHERE login = ?");
-            $stmt->execute([$login]);
-            $user = $stmt->fetch();
+    // Recherche de l'utilisateur par son login
+    $stmt = $pdo->prepare("SELECT * FROM utilisateurs WHERE login = ?");
+    $stmt->execute([$login]);
+    $user = $stmt->fetch();
 
-            if ($user) {
-                // 5. Vérification du mot de passe haché 
-                if (password_verify($password, $user['password'])) {
-                    
-                    // Initialisation des variables de session [cite: 9, 21]
-                    $_SESSION['id_user'] = $user['id'];
-                    $_SESSION['login'] = $user['login'];
-                    $_SESSION['role'] = $user['role'];
+    if ($user) {
+        // VÉRIFICATION DU MOT DE PASSE HACHÉ
+      if (password_verify($password, $user['password'])) {
+            
+            // Connexion réussie : on remplit la session
+            $_SESSION['id_user'] = $user['id'];
+            $_SESSION['login'] = $user['login'];
+            $_SESSION['role'] = $user['role'];
 
-                    // Redirection vers l'accueil après succès [cite: 40]
-                    header('Location: index.php');
-                    exit();
-                } else {
-                    $erreur = "❌ Mot de passe incorrect.";
-                }
-            } else {
-                $erreur = "❌ L'utilisateur '$login' n'existe pas.";
-            }
-        } catch (PDOException $e) {
-            $erreur = "Erreur de base de données : " . $e->getMessage();
+            // Redirection vers la page d'accueil
+            header('Location: index.php');
+            exit();
+        } else {
+            // Le hash ne correspond pas au mot de passe saisi
+            $erreur = " Mot de passe incorrect.";
         }
     } else {
-        $erreur = "Veuillez remplir tous les champs.";
+        // Aucun utilisateur trouvé avec ce login
+        $erreur = "L'utilisateur '$login' n'existe pas.";
     }
 }
 ?>

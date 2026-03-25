@@ -4,7 +4,7 @@ define('URL_BASE', '/projet_actualite/');
 $host = 'localhost';
 $dbname = 'projet_actualite';
 $user = 'root';
-$pass = ''; // Vide par défaut sur XAMPP Windows
+$pass = ''; 
 
 try {
     // Création de l'objet PDO

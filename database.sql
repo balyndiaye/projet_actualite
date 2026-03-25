@@ -1,41 +1,65 @@
--- 1. Création de la base de données
-CREATE DATABASE IF NOT EXISTS `projet_actualite` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE `projet_actualite`;
+-- phpMyAdmin SQL Dump
+-- version 5.2.1
+-- Base de données : `projet_actualite`
 
--- 2. Table des catégories
-CREATE TABLE `categories` (
-    `id` INT(11) NOT NULL AUTO_INCREMENT,
-    `nom` VARCHAR(100) NOT NULL,
-    PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
 
--- 3. Table des utilisateurs (D'après ta capture écran)
-CREATE TABLE `utilisateurs` (
-    `id` INT(11) NOT NULL AUTO_INCREMENT,
-    `login` VARCHAR(50) NOT NULL,
-    `password` VARCHAR(255) NOT NULL,
-    `role` VARCHAR(20) NOT NULL DEFAULT 'editeur',
-    PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
+-- --------------------------------------------------------
+-- Structure de la table `categories`
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `categories` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `nom` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- 4. Table des articles (Avec les corrections de colonnes)
-CREATE TABLE `articles` (
-    `id` INT(11) NOT NULL AUTO_INCREMENT,
-    `titre` VARCHAR(255) NOT NULL,
-    `contenu` TEXT NOT NULL,
-    `image` VARCHAR(255) DEFAULT NULL,
-    `date_creation` DATETIME DEFAULT CURRENT_TIMESTAMP,
-    `id_categorie` INT(11),
-    `id_utilisateur` INT(11),
-    PRIMARY KEY (`id`),
-    CONSTRAINT `fk_categorie` FOREIGN KEY (`id_categorie`) REFERENCES `categories`(`id`) ON DELETE SET NULL,
-    CONSTRAINT `fk_auteur` FOREIGN KEY (`id_utilisateur`) REFERENCES `utilisateurs`(`id`) ON DELETE SET NULL
-) ENGINE=InnoDB;
+INSERT INTO `categories` (`id`, `nom`) VALUES
+(1, 'Education'),
+(2, 'Sport'),
+(3, 'Politique'),
+(5, 'Technologie'),
+(23, 'culture');
 
--- 5. Insertion des utilisateurs de ta capture
+-- --------------------------------------------------------
+-- Structure de la table `utilisateurs`
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `utilisateurs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `login` varchar(100) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `role` varchar(50) DEFAULT 'editeur',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 INSERT INTO `utilisateurs` (`id`, `login`, `password`, `role`) VALUES
-(3, 'astou', '$2y$10$K1BgB7I./ixZwvRiDf6Wpuo/SqUbq6wGVO6zQa07VdE...', 'editeur'),
-(4, 'admin', '$2y$10$VLm9PXPGKvssSJYKbYxUTODJKmesG0zkc9oaSWkkXPt...', 'admin');
+(3, 'astou', '$2y$10$K1BgB7I./ixZwvRiDf6Wpuo/SqUbq6wGVO6zQa07VdEAVr2CYzQyO', 'editeur'),
+(4, 'admin', '$2y$10$VLm9PXPGKvsSJYKbYXsUTODJKmesG0zkc9oaSWkkXPtHSNWxj7gqK', 'admin');
 
--- 6. Insertion de quelques catégories de test
-INSERT INTO `categories` (`nom`) VALUES ('Technologie'), ('Sport'), ('Culture');
+-- --------------------------------------------------------
+-- Structure de la table `articles`
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `articles` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `titre` varchar(255) NOT NULL,
+  `contenu` text NOT NULL,
+  `image` varchar(255) DEFAULT NULL,
+  `date_creation` datetime DEFAULT current_timestamp(),
+  `id_categorie` int(11) DEFAULT NULL,
+  `id_utilisateur` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `id_categorie` (`id_categorie`),
+  KEY `id_utilisateur` (`id_utilisateur`),
+  CONSTRAINT `articles_ibfk_1` FOREIGN KEY (`id_categorie`) REFERENCES `categories` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `articles_ibfk_2` FOREIGN KEY (`id_utilisateur`) REFERENCES `utilisateurs` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `articles` (`id`, `titre`, `contenu`, `image`, `date_creation`, `id_categorie`, `id_utilisateur`) VALUES
+(4, 'Innovation technologique : Dakar...', 'Le Sénégal se positionne...', '1774458177_WhatsApp...webp', '2026-03-25 17:02:57', 5, 3),
+(5, 'Demande de visa : BLS International...', 'BLS International a mis...', '1774458644_Demande-visa...webp', '2026-03-25 17:10:44', 5, 3),
+(6, 'Korité 2026 : le croissant lunaire...', 'La fin du mois de Ramadan...', '1774459026_487202945...jpg', '2026-03-25 17:17:06', 23, 3),
+(7, 'Éducation et formation : le programme Clé...', 'Combattre l’exclusion...', '1774459152_3.-Photo-2...webp', '2026-03-25 17:19:12', 1, 3),
+(8, 'Sénégal,Algérie, Cap‑Vert… : Visa américain...', 'À quelques mois du coup d’envoi...', '1774459471_can-2025...jpg', '2026-03-25 17:24:31', 2, 3);
+
+COMMIT;

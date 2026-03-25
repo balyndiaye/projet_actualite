@@ -17,7 +17,7 @@ $users = $pdo->query("SELECT id, login, role FROM utilisateurs ORDER BY id ASC")
 
 <main class="container" style="margin-top: 30px;">
     <div style="display: flex; justify-content: space-between; align-items: center; background: white; padding: 20px; border-radius: 10px 10px 0 0; border-bottom: 3px solid #3922e6; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-        <h1 style="margin: 0; color: #2c3e50;">👥 Gestion des utilisateurs</h1>
+        <h1 style="margin: 0; color: #2c3e50;"> Gestion des utilisateurs</h1>
         <a href="ajouter.php" style="background: #27ae60; color: white; padding: 12px 20px; border-radius: 5px; text-decoration: none; font-weight: bold;">
             + Nouvel Utilisateur
         </a>
