@@ -1,47 +1,51 @@
 <?php
-// 1. Démarrage de la session
+// 1. Démarrage de la session au tout début 
 session_start();
 
-// 2. Affichage des erreurs (Utile pour le développement)
+// 2. Affichage des erreurs pour le débuggage
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// 3. Connexion à la base de données
-// Assure-toi que le chemin vers db.php est correct
-require_once 'config/db.php';
+// 3. Connexion à la base de données [cite: 30, 35]
+require_once 'config/db.php'; 
 
 $erreur = "";
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // On récupère et on nettoie les saisies
+    // Nettoyage des saisies pour éviter les espaces accidentels 
     $login = trim($_POST['login']);
     $password = $_POST['password'];
 
-    // 4. Recherche de l'utilisateur par son login
-    $stmt = $pdo->prepare("SELECT * FROM utilisateurs WHERE login = ?");
-    $stmt->execute([$login]);
-    $user = $stmt->fetch();
+    if (!empty($login) && !empty($password)) {
+        try {
+            // 4. Utilisation de requêtes préparées contre les injections SQL 
+            $stmt = $pdo->prepare("SELECT * FROM utilisateurs WHERE login = ?");
+            $stmt->execute([$login]);
+            $user = $stmt->fetch();
 
-    if ($user) {
-        // 5. VÉRIFICATION DU MOT DE PASSE HACHÉ
-        // Cette fonction compare le texte clair ($password) avec le hash ($user['password'])
-        if (password_verify($password, $user['password'])) {
-            
-            // Connexion réussie : on remplit la session
-            $_SESSION['id_user'] = $user['id'];
-            $_SESSION['login'] = $user['login'];
-            $_SESSION['role'] = $user['role'];
+            if ($user) {
+                // 5. Vérification du mot de passe haché 
+                if (password_verify($password, $user['password'])) {
+                    
+                    // Initialisation des variables de session [cite: 9, 21]
+                    $_SESSION['id_user'] = $user['id'];
+                    $_SESSION['login'] = $user['login'];
+                    $_SESSION['role'] = $user['role'];
 
-            // Redirection vers la page d'accueil
-            header('Location: index.php');
-            exit();
-        } else {
-            // Le hash ne correspond pas au mot de passe saisi
-            $erreur = "❌ Mot de passe incorrect.";
+                    // Redirection vers l'accueil après succès [cite: 40]
+                    header('Location: index.php');
+                    exit();
+                } else {
+                    $erreur = "❌ Mot de passe incorrect.";
+                }
+            } else {
+                $erreur = "❌ L'utilisateur '$login' n'existe pas.";
+            }
+        } catch (PDOException $e) {
+            $erreur = "Erreur de base de données : " . $e->getMessage();
         }
     } else {
-        // Aucun utilisateur trouvé avec ce login
-        $erreur = "❌ L'utilisateur '$login' n'existe pas.";
+        $erreur = "Veuillez remplir tous les champs.";
     }
 }
 ?>
@@ -70,23 +74,36 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <h2>Connexion</h2>
 
         <?php if ($erreur): ?>
-            <div class="error-msg"><?= $erreur ?></div>
+            <div class="error-msg"><?= htmlspecialchars($erreur) ?></div>
         <?php endif; ?>
 
-        <form method="POST">
+        <form method="POST" onsubmit="return validerFormulaire()">
             <div class="form-group">
                 <label>Nom d'utilisateur</label>
-                <input type="text" name="login" placeholder="Ex: login" required autofocus>
+                <input type="text" name="login" id="login" placeholder="Ex: admin" required autofocus>
             </div>
 
             <div class="form-group">
                 <label>Mot de passe</label>
-                <input type="password" name="password" placeholder="••••••••" required>
+                <input type="password" name="password" id="password" placeholder="••••••••" required>
             </div>
 
             <button type="submit">Se connecter</button>
         </form>
     </div>
 
+    <script>
+    [cite_start]// Validation côté client obligatoire [cite: 33, 56]
+    function validerFormulaire() {
+        const login = document.getElementById('login').value.trim();
+        const pass = document.getElementById('password').value;
+        
+        if (login === "" || pass === "") {
+            alert("Tous les champs sont obligatoires.");
+            return false;
+        }
+        return true;
+    }
+    </script>
 </body>
 </html>
