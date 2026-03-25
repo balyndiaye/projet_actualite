@@ -1,13 +1,12 @@
 <?php
-// 1. Démarrage de la session
+// Démarrage de la session
 session_start();
 
-// 2. Affichage des erreurs (Utile pour le développement)
+// Affichage des erreurs (Utile pour le développement)
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// 3. Connexion à la base de données
-// Assure-toi que le chemin vers db.php est correct
+// onnexion à la base de données
 require_once 'config/db.php';
 
 $erreur = "";
@@ -17,15 +16,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $login = trim($_POST['login']);
     $password = $_POST['password'];
 
-    // 4. Recherche de l'utilisateur par son login
+    // Recherche de l'utilisateur par son login
     $stmt = $pdo->prepare("SELECT * FROM utilisateurs WHERE login = ?");
     $stmt->execute([$login]);
     $user = $stmt->fetch();
 
     if ($user) {
-        // 5. VÉRIFICATION DU MOT DE PASSE HACHÉ
-        // Cette fonction compare le texte clair ($password) avec le hash ($user['password'])
-        if (password_verify($password, $user['password'])) {
+        // VÉRIFICATION DU MOT DE PASSE HACHÉ
+      if (password_verify($password, $user['password'])) {
             
             // Connexion réussie : on remplit la session
             $_SESSION['id_user'] = $user['id'];
@@ -37,11 +35,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             exit();
         } else {
             // Le hash ne correspond pas au mot de passe saisi
-            $erreur = "❌ Mot de passe incorrect.";
+            $erreur = " Mot de passe incorrect.";
         }
     } else {
         // Aucun utilisateur trouvé avec ce login
-        $erreur = "❌ L'utilisateur '$login' n'existe pas.";
+        $erreur = "L'utilisateur '$login' n'existe pas.";
     }
 }
 ?>

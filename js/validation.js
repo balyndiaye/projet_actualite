@@ -1,4 +1,4 @@
-// Exemple simple pour valider un formulaire
+
 document.addEventListener("DOMContentLoaded", function() {
     const forms = document.querySelectorAll("form");
     

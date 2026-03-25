@@ -12,7 +12,7 @@ if (isset($_GET['id'])) {
     $id = (int)$_GET['id'];
 
     try {
-        // 2. VÉRIFICATION AVANT SUPPRESSION (Sécurité Backend)
+        
         // On vérifie si des articles sont liés à cette catégorie
         $check = $pdo->prepare("SELECT COUNT(*) FROM articles WHERE id_categorie = ?");
         $check->execute([$id]);
@@ -24,7 +24,7 @@ if (isset($_GET['id'])) {
             exit();
         }
 
-        // 3. TENTATIVE DE SUPPRESSION
+        // TENTATIVE DE SUPPRESSION
         $stmt = $pdo->prepare("DELETE FROM categories WHERE id = ?");
         $stmt->execute([$id]);
         
