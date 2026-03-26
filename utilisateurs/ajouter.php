@@ -35,7 +35,7 @@ include '../menu.php';
 <main class="container" style="margin-top: 40px; max-width: 500px;">
     <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
         
-        <h2 style="color: #2c3e50; margin-bottom: 25px; border-bottom: 2px solid #3922e6; padding-bottom: 10px;">
+        <h2 style="color: #2c3e50; margin-bottom: 25px; border-bottom: 2px solid #ffffff; padding-bottom: 10px;">
              Nouvel Utilisateur
         </h2>
 

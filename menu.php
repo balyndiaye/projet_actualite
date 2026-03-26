@@ -1,3 +1,7 @@
+Contenu collé
+5.50 Ko •89 lignes
+•
+Le formatage peut être différent de la source
 <?php 
 if (session_status() === PHP_SESSION_NONE) { 
     session_start(); 
@@ -26,12 +30,12 @@ try {
         <div class="container" style="display: flex; align-items: center; justify-content: space-between; max-width: 1350px; margin: 0 auto; padding: 0 25px;">
             
             <a href="<?php echo URL_BASE; ?>index.php" style="text-decoration: none; font-size: 1.9rem; font-weight: 900; color: #FFFFFF; letter-spacing: -1px; white-space: nowrap;">
-                ESP NEWS<span style="color: #3922e6;">.</span>
+                ESP NEWS<span style="color: #ffffff;">.</span>
             </a>
             
             <form action="<?php echo URL_BASE; ?>index.php" method="GET" style="flex-grow: 1; max-width: 450px; position: relative; margin: 0 40px;">
                 <input type="text" name="search" placeholder="Rechercher une actualité..." 
-                       style="width: 100%; padding: 12px 45px 12px 20px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255, 255, 255, 0.1); color: #FFFFFF; outline: none; font-size: 0.95rem;">
+                       style="width: 100%; padding: 12px 0px 12px 20px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255, 255, 255, 0.1); color: #FFFFFF; outline: none; font-size: 0.95rem;">
                 <button type="submit" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); border: none; background: none; cursor: pointer; color: #FFFFFF; font-size: 1.1rem;">
                     <i class="fas fa-search"></i>
                 </button>
@@ -49,7 +53,7 @@ try {
                         <?php endif; ?>
 
                         <?php if(isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
-                            <li><a href="<?php echo URL_BASE; ?>utilisateurs/liste.php" style="text-decoration: none; color: #FFFFFF; font-size: 0.9rem; font-weight: 600;">Équipe</a></li>
+                            <li><a href="<?php echo URL_BASE; ?>utilisateurs/liste.php" style="text-decoration: none; color: #FFFFFF; font-size: 0.9rem; font-weight: 600;">Utilisateurs</a></li>
                         <?php endif; ?>
                         
                         <li>
