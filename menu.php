@@ -1,7 +1,3 @@
-Contenu collé
-5.50 Ko •89 lignes
-•
-Le formatage peut être différent de la source
 <?php 
 if (session_status() === PHP_SESSION_NONE) { 
     session_start(); 
