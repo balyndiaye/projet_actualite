@@ -12,7 +12,7 @@ require_once 'config/db.php';
 $erreur = "";
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // On récupère et on nettoie les saisies
+    // Nettoyage des saisies pour éviter les espaces accidentels 
     $login = trim($_POST['login']);
     $password = $_POST['password'];
 
@@ -68,23 +68,36 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <h2>Connexion</h2>
 
         <?php if ($erreur): ?>
-            <div class="error-msg"><?= $erreur ?></div>
+            <div class="error-msg"><?= htmlspecialchars($erreur) ?></div>
         <?php endif; ?>
 
-        <form method="POST">
+        <form method="POST" onsubmit="return validerFormulaire()">
             <div class="form-group">
                 <label>Nom d'utilisateur</label>
-                <input type="text" name="login" placeholder="Ex: login" required autofocus>
+                <input type="text" name="login" id="login" placeholder="Ex: admin" required autofocus>
             </div>
 
             <div class="form-group">
                 <label>Mot de passe</label>
-                <input type="password" name="password" placeholder="••••••••" required>
+                <input type="password" name="password" id="password" placeholder="••••••••" required>
             </div>
 
             <button type="submit">Se connecter</button>
         </form>
     </div>
 
+    <script>
+    [cite_start]// Validation côté client obligatoire [cite: 33, 56]
+    function validerFormulaire() {
+        const login = document.getElementById('login').value.trim();
+        const pass = document.getElementById('password').value;
+        
+        if (login === "" || pass === "") {
+            alert("Tous les champs sont obligatoires.");
+            return false;
+        }
+        return true;
+    }
+    </script>
 </body>
 </html>

@@ -3,7 +3,7 @@
             
             <div>
                 <div style="font-size: 1.6rem; font-weight: 900; margin-bottom: 20px; letter-spacing: -1px;">
-                    ESP NEWS<span style="color: #3922e6;">.</span>
+                    ESP NEWS<span style="color: #ffffff;">.</span>
                 </div>
                 <p style="font-size: 0.9rem; line-height: 1.7; color: #999; max-width: 320px;">
                     Le portail numérique dédié à l'actualité de l'École Supérieure Polytechnique et aux innovations technologiques au Sénégal.
@@ -46,7 +46,7 @@
 
         <div style="max-width: 1200px; margin: 50px auto 0; padding: 25px 25px 0; border-top: 1px solid #333; text-align: center;">
             <p style="color: #666; font-size: 0.8rem; margin: 0;">
-                &copy; <?php echo date('Y'); ?> <strong>ESPNEWS</strong>. Plateforme d'actualité développée par Diarra.
+                &copy; <?php echo date('Y'); ?> <strong>ESPNEWS</strong>. Plateforme d'actualité développée par DBA.
             </p>
         </div>
     </footer>
