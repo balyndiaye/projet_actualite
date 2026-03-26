@@ -2,7 +2,7 @@
 session_start();
 require_once '../config/db.php';
 
-// 1. SÉCURITÉ : On autorise l'admin ET l'editeur
+// SÉCURITÉ : On autorise l'admin ET l'editeur
 if (!isset($_SESSION['role']) || ($_SESSION['role'] !== 'admin' && $_SESSION['role'] !== 'editeur')) {
     header('Location: ../index.php?err=acces_refuse');
     exit();

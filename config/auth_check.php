@@ -1,15 +1,14 @@
 <?php
 session_start();
 
-// 1. Vérification de la connexion globale
+//  Vérification de la connexion globale
 // On vérifie si le rôle existe (ce qui prouve que l'utilisateur est connecté)
 if (!isset($_SESSION['role'])) {
-    // On remonte d'un dossier (../) pour trouver la page de connexion
     header('Location: ../connexion.php');
     exit();
 } 
 
-// 2. Vérification du niveau de droits (si la page demande un rôle spécifique)
+//Vérification du niveau de droits (si la page demande un rôle spécifique)
 if (isset($role_requis)) {
     // Si l'utilisateur n'a pas le rôle demandé ET n'est pas administrateur
     if ($_SESSION['role'] !== $role_requis && $_SESSION['role'] !== 'administrateur') {

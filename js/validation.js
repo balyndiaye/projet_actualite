@@ -1,12 +1,12 @@
 
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     const forms = document.querySelectorAll("form");
-    
+
     forms.forEach(form => {
-        form.addEventListener("submit", function(event) {
+        form.addEventListener("submit", function (event) {
             let valid = true;
             const inputs = form.querySelectorAll("input[required], textarea[required]");
-            
+
             inputs.forEach(input => {
                 if (input.value.trim() === "") {
                     valid = false;

@@ -22,7 +22,7 @@ if (isset($_GET['id'])) {
     try {
         $stmt = $pdo->prepare("DELETE FROM utilisateurs WHERE id = ?");
         $stmt->execute([$id_a_supprimer]);
-        
+
         header("Location: liste.php?msg=supprime");
         exit();
     } catch (PDOException $e) {

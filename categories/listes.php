@@ -22,8 +22,9 @@ include '../menu.php';
         padding: 30px;
         border-radius: 12px;
         margin: 40px auto;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-        border-top: 5px solid #6D071A; /* Ton bordeaux */
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        border-top: 5px solid #6D071A;
+        /* Ton bordeaux */
         max-width: 1000px;
     }
 
@@ -88,7 +89,10 @@ include '../menu.php';
         align-items: center;
         gap: 8px;
     }
-    .btn-add:hover { background: #6D071A; }
+
+    .btn-add:hover {
+        background: #6D071A;
+    }
 
     /* Liens d'actions */
     .action-link {
@@ -124,30 +128,31 @@ include '../menu.php';
                 </tr>
             </thead>
             <tbody>
+
                 <?php if (count($categories) > 0): ?>
                     <?php foreach ($categories as $cat): ?>
-                    <tr>
-                        <td style="color: #bbb; font-weight: bold; font-size: 0.85rem;">
-                            #<?= $cat['id'] ?>
-                        </td>
-                        <td>
-                            <div style="display: flex; align-items: center;">
-                                <div class="cat-icon"><i class="fas fa-tag"></i></div>
-                                <span style="font-weight: 700; color: #333; font-size: 1.05rem;">
-                                    <?= htmlspecialchars($cat['nom']) ?>
-                                </span>
-                            </div>
-                        </td>
-                        <td style="text-align: right; padding-right: 20px; white-space: nowrap;">
-                            <a href="modifier.php?id=<?= $cat['id'] ?>" class="action-link" style="color: #6D071A; margin-right: 20px;">
-                                <i class="fas fa-edit"></i> Editer
-                            </a>
-                            <a href="supprimer.php?id=<?= $cat['id'] ?>" class="action-link" style="color: #cc0000;" 
-                               onclick="return confirm('Attention : Supprimer cette catégorie pourrait affecter les articles liés. Confirmer ?')">
-                                <i class="fas fa-trash-alt"></i> Retirer
-                            </a>
-                        </td>
-                    </tr>
+                        <tr>
+                            <td style="color: #bbb; font-weight: bold; font-size: 0.85rem;">
+                                #<?= $cat['id'] ?>
+                            </td>
+                            <td>
+                                <div style="display: flex; align-items: center;">
+                                    <div class="cat-icon"><i class="fas fa-tag"></i></div>
+                                    <span style="font-weight: 700; color: #333; font-size: 1.05rem;">
+                                        <?= htmlspecialchars($cat['nom']) ?>
+                                    </span>
+                                </div>
+                            </td>
+                            <td style="text-align: right; padding-right: 20px; white-space: nowrap;">
+                                <a href="modifier.php?id=<?= $cat['id'] ?>" class="action-link" style="color: #6D071A; margin-right: 20px;">
+                                    <i class="fas fa-edit"></i> Editer
+                                </a>
+                                <a href="supprimer.php?id=<?= $cat['id'] ?>" class="action-link" style="color: #cc0000;"
+                                    onclick="return confirm('Attention : Supprimer cette catégorie pourrait affecter les articles liés. Confirmer ?')">
+                                    <i class="fas fa-trash-alt"></i> Retirer
+                                </a>
+                            </td>
+                        </tr>
                     <?php endforeach; ?>
                 <?php else: ?>
                     <tr>

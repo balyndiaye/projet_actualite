@@ -1,4 +1,4 @@
-<?php 
+<?php
 session_start();
 require_once '../config/db.php';
 
@@ -35,40 +35,40 @@ $users = $pdo->query("SELECT id, login, role FROM utilisateurs ORDER BY id ASC")
             </thead>
             <tbody>
                 <?php foreach ($users as $u): ?>
-                <tr style="border-bottom: 1px solid #eee;">
-                    <td style="padding: 12px;"><?= $u['id'] ?></td>
-                    <td style="padding: 12px; font-weight: bold;"><?= htmlspecialchars($u['login']) ?></td>
-                    <td style="padding: 12px;">
-                        <span style="padding: 5px 10px; border-radius: 4px; font-size: 0.85em; font-weight: bold; background: <?= $u['role'] === 'admin' ? '#d1ecf1' : '#e2e3e5' ?>; color: <?= $u['role'] === 'admin' ? '#0c5460' : '#383d41' ?>;">
-                            <?= strtoupper($u['role']) ?>
-                        </span>
-                    </td>
-                    <td style="padding: 12px; text-align: center;">
-                        <?php if ($u['id'] != $_SESSION['id_user']): ?>
-    
-    <?php if ($u['role'] === 'admin'): ?>
-        <a href="modifier_role.php?id=<?= $u['id'] ?>&role=editeur" 
-           style="color: #17a2b8; text-decoration: none; font-size: 0.9em; margin-right: 15px;">
-           Rendre Éditeur
-        </a>
-    <?php else: ?>
-        <a href="modifier_role.php?id=<?= $u['id'] ?>&role=admin" 
-           style="color: #2a0ba4; text-decoration: none; font-size: 0.9em; margin-right: 15px;">
-           Rendre Admin
-        </a>
-    <?php endif; ?>
+                    <tr style="border-bottom: 1px solid #eee;">
+                        <td style="padding: 12px;"><?= $u['id'] ?></td>
+                        <td style="padding: 12px; font-weight: bold;"><?= htmlspecialchars($u['login']) ?></td>
+                        <td style="padding: 12px;">
+                            <span style="padding: 5px 10px; border-radius: 4px; font-size: 0.85em; font-weight: bold; background: <?= $u['role'] === 'admin' ? '#d1ecf1' : '#e2e3e5' ?>; color: <?= $u['role'] === 'admin' ? '#0c5460' : '#383d41' ?>;">
+                                <?= strtoupper($u['role']) ?>
+                            </span>
+                        </td>
+                        <td style="padding: 12px; text-align: center;">
+                            <?php if ($u['id'] != $_SESSION['id_user']): ?>
 
-    <a href="supprimer_user.php?id=<?= $u['id'] ?>" 
-       style="color: #dc3545; text-decoration: none; font-weight: bold; font-size: 0.9em;" 
-       onclick="return confirm('Supprimer cet utilisateur ?')">
-       Supprimer
-    </a>
+                                <?php if ($u['role'] === 'admin'): ?>
+                                    <a href="modifier_role.php?id=<?= $u['id'] ?>&role=editeur"
+                                        style="color: #17a2b8; text-decoration: none; font-size: 0.9em; margin-right: 15px;">
+                                        Rendre Éditeur
+                                    </a>
+                                <?php else: ?>
+                                    <a href="modifier_role.php?id=<?= $u['id'] ?>&role=admin"
+                                        style="color: #2a0ba4; text-decoration: none; font-size: 0.9em; margin-right: 15px;">
+                                        Rendre Admin
+                                    </a>
+                                <?php endif; ?>
 
-<?php else: ?>
-    <small style="color: #999; font-style: italic;">(C'est vous)</small>
-<?php endif; ?>
-                    </td>
-                </tr>
+                                <a href="supprimer_user.php?id=<?= $u['id'] ?>"
+                                    style="color: #dc3545; text-decoration: none; font-weight: bold; font-size: 0.9em;"
+                                    onclick="return confirm('Supprimer cet utilisateur ?')">
+                                    Supprimer
+                                </a>
+
+                            <?php else: ?>
+                                <small style="color: #999; font-style: italic;">(C'est vous)</small>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
                 <?php endforeach; ?>
             </tbody>
         </table>

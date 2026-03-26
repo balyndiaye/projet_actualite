@@ -50,21 +50,21 @@ include '../menu.php';
 
 <main class="container" style="margin-top: 30px; max-width: 800px; font-family: 'Segoe UI', sans-serif;">
     <div style="background: white; padding: 30px; border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.1);">
-        
+
         <h2 style="color: #2c3e50; margin-bottom: 25px; border-bottom: 4px solid #3922e6; padding-bottom: 10px;">
-             Ajouter une Actualité
+            Ajouter un Article
         </h2>
 
-        <?php if($erreur): ?>
+        <?php if ($erreur): ?>
             <div style="background: #f8d7da; color: #721c24; padding: 12px; border-radius: 8px; margin-bottom: 20px;">
                 <?= $erreur ?>
             </div>
         <?php endif; ?>
 
         <form action="" method="POST" enctype="multipart/form-data">
-            
+
             <div style="margin-bottom: 20px;">
-                <label style="display: block; font-weight: bold; margin-bottom: 8px;">Titre de l'actualité</label>
+                <label style="display: block; font-weight: bold; margin-bottom: 8px;">Titre de l'article</label>
                 <input type="text" name="titre" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;">
             </div>
 
@@ -73,7 +73,7 @@ include '../menu.php';
                     <label style="display: block; font-weight: bold; margin-bottom: 8px;">Catégorie</label>
                     <select name="id_categorie" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; background: white;">
                         <option value="">-- Choisir --</option>
-                        <?php foreach($categories as $cat): ?>
+                        <?php foreach ($categories as $cat): ?>
                             <option value="<?= $cat['id'] ?>"><?= htmlspecialchars($cat['nom']) ?></option>
                         <?php endforeach; ?>
                     </select>

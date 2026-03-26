@@ -6,7 +6,7 @@ session_start();
 if (!isset($_SESSION['role'])) {
     header('Location: ../connexion.php');
     exit();
-} 
+}
 
 // Vérification du niveau de droits (si la page demande un rôle spécifique)
 if (isset($role_requis)) {
@@ -17,4 +17,3 @@ if (isset($role_requis)) {
         exit();
     }
 }
-?>

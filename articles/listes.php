@@ -9,7 +9,7 @@ if (!isset($_SESSION['login'])) {
 }
 
 // On définit URL_BASE seulement s'il n'existe pas déjà
-if(!defined('URL_BASE')) define('URL_BASE', '../'); 
+if (!defined('URL_BASE')) define('URL_BASE', '../');
 
 try {
     if ($_SESSION['role'] === 'admin') {
@@ -33,8 +33,8 @@ try {
     die("Erreur SQL : " . $e->getMessage());
 }
 
-include '../entete.php'; 
-include '../menu.php'; 
+include '../entete.php';
+include '../menu.php';
 ?>
 
 <style>
@@ -43,10 +43,12 @@ include '../menu.php';
         padding: 30px;
         border-radius: 12px;
         margin: 40px auto;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-        border-top: 5px solid #6D071A; /* Ton Bordeaux */
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        border-top: 5px solid #6D071A;
+        /* Ton Bordeaux */
         max-width: 1200px;
     }
+
     .admin-header {
         display: flex;
         justify-content: space-between;
@@ -55,10 +57,12 @@ include '../menu.php';
         padding-bottom: 20px;
         border-bottom: 2px solid #f8f9fa;
     }
+
     .table-admin {
         width: 100%;
         border-collapse: collapse;
     }
+
     .table-admin th {
         text-align: left;
         padding: 15px;
@@ -70,13 +74,16 @@ include '../menu.php';
         font-weight: 800;
         border-bottom: 2px solid #eee;
     }
+
     .table-admin td {
         padding: 20px 15px;
         border-bottom: 1px solid #f1f1f1;
         vertical-align: middle;
     }
+
     .badge-cat {
-        background: #6D071A; /* Bordeaux */
+        background: #6D071A;
+        /* Bordeaux */
         color: white;
         padding: 4px 12px;
         border-radius: 4px;
@@ -84,6 +91,7 @@ include '../menu.php';
         font-weight: 800;
         text-transform: uppercase;
     }
+
     .btn-add {
         background: #1a1a1a;
         color: white;
@@ -94,7 +102,10 @@ include '../menu.php';
         font-size: 0.9rem;
         transition: 0.3s;
     }
-    .btn-add:hover { background: #6D071A; }
+
+    .btn-add:hover {
+        background: #6D071A;
+    }
 </style>
 
 <main class="container">
@@ -118,7 +129,7 @@ include '../menu.php';
                         <th style="width: 100px;">Aperçu</th>
                         <th>Titre de l'actu</th>
                         <th>Catégorie</th>
-                        <?php if($_SESSION['role'] === 'admin'): ?><th>Auteur</th><?php endif; ?>
+                        <?php if ($_SESSION['role'] === 'admin'): ?><th>Auteur</th><?php endif; ?>
                         <th style="text-align: right;">Actions</th>
                     </tr>
                 </thead>
@@ -126,13 +137,13 @@ include '../menu.php';
                     <?php foreach ($articles as $art): ?>
                         <tr>
                             <td>
-                                <?php 
-                                    // CHEMIN IMAGE : On sort de /articles/ et on va dans /uploads/
-                                    $imagePath = "../uploads/" . $art['image'];
+                                <?php
+                                // CHEMIN IMAGE : On sort de /articles/ et on va dans /uploads/
+                                $imagePath = "../uploads/" . $art['image'];
                                 ?>
-                                <img src="<?php echo htmlspecialchars($imagePath); ?>" 
-                                     style="width:80px; height:55px; object-fit:cover; border-radius:6px; background: #eee;" 
-                                     onerror="this.src='../img/default.jpg'">
+                                <img src="<?php echo htmlspecialchars($imagePath); ?>"
+                                    style="width:80px; height:55px; object-fit:cover; border-radius:6px; background: #eee;"
+                                    onerror="this.src='../img/default.jpg'">
                             </td>
                             <td>
                                 <div style="font-weight: 800; color: #1a1a1a; font-size: 1.05rem; margin-bottom: 5px;">
@@ -143,8 +154,8 @@ include '../menu.php';
                                 </div>
                             </td>
                             <td><span class="badge-cat"><?php echo htmlspecialchars($art['categorie_nom'] ?? 'Général'); ?></span></td>
-                            
-                            <?php if($_SESSION['role'] === 'admin'): ?>
+
+                            <?php if ($_SESSION['role'] === 'admin'): ?>
                                 <td style="color: #6D071A; font-weight: 700; font-size: 0.9rem;">
                                     <i class="far fa-user" style="margin-right: 5px; opacity: 0.5;"></i>
                                     <?php echo htmlspecialchars($art['auteur_nom']); ?>

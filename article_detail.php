@@ -2,7 +2,7 @@
 session_start();
 require_once 'config/db.php';
 
-// 1. Récupération de l'ID
+// Récupération de l'ID
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
 if ($id <= 0) {
@@ -10,7 +10,7 @@ if ($id <= 0) {
     exit();
 }
 
-// 2. Requête SQL (On récupère bien TOUT avec a.*)
+// Requête SQL (On récupère bien TOUT avec a.*)
 $sql = "SELECT a.*, c.nom as cat_nom, u.login as auteur_nom 
         FROM articles a 
         LEFT JOIN categories c ON a.id_categorie = c.id 
@@ -31,13 +31,13 @@ include 'menu.php';
 ?>
 
 <main class="container" style="margin-top: 40px; max-width: 900px; font-family: 'Inter', sans-serif; margin-bottom: 80px;">
-    
+
     <a href="index.php" style="color: #6D071A; text-decoration: none; font-weight: 800; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 25px; text-transform: uppercase; font-size: 0.85rem;">
         <i class="fas fa-arrow-left"></i> Retour
     </a>
 
     <article style="background: white; padding: 45px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid #eee;">
-        
+
         <?php if (!empty($article['image'])): ?>
             <div style="width: 100%; margin-bottom: 35px; border-radius: 12px; overflow: hidden;">
                 <img src="uploads/<?= htmlspecialchars($article['image']) ?>" style="width: 100%; display: block;">
@@ -57,12 +57,12 @@ include 'menu.php';
         </div>
 
         <div style="font-size: 1.2rem; line-height: 1.8; color: #333; font-family: 'Georgia', serif; white-space: pre-wrap;">
-            <?php 
-                if(!empty($article['contenu'])) {
-                    echo nl2br(htmlspecialchars($article['contenu']));
-                } else {
-                    echo "<p style='color: #999; font-style: italic;'>Cet article n'a pas encore de description.</p>";
-                }
+            <?php
+            if (!empty($article['contenu'])) {
+                echo nl2br(htmlspecialchars($article['contenu']));
+            } else {
+                echo "<p style='color: #999; font-style: italic;'>Cet article n'a pas encore de description.</p>";
+            }
             ?>
         </div>
 

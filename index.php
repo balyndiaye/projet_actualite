@@ -2,13 +2,13 @@
 session_start();
 require_once 'config/db.php';
 
-// --- 1. CONFIGURATION DE LA PAGINATION ---
-$articlesParPage = 3; 
+// CONFIGURATION DE LA PAGINATION
+$articlesParPage = 3;
 $pageActuelle = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 if ($pageActuelle <= 0) $pageActuelle = 1;
 $offset = ($pageActuelle - 1) * $articlesParPage;
 
-// --- 2. GESTION DES FILTRES (CATÉGORIE ET RECHERCHE) ---
+// GESTION DES FILTRES (CATÉGORIE ET RECHERCHE)
 $id_cat = isset($_GET['id_cat']) ? (int)$_GET['id_cat'] : 0;
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 $params = [];
@@ -33,14 +33,14 @@ if (count($conditions) > 0) {
     $whereClause = " WHERE " . implode(" AND ", $conditions);
 }
 
-// --- 3. CALCUL DU TOTAL POUR LA PAGINATION ---
+// CALCUL DU TOTAL POUR LA PAGINATION
 $sqlCount = "SELECT COUNT(*) FROM articles a" . $whereClause;
 $stmtCount = $pdo->prepare($sqlCount);
 $stmtCount->execute($params);
 $totalArticles = $stmtCount->fetchColumn();
 $totalPages = ceil($totalArticles / $articlesParPage);
 
-// --- 4. RÉCUPÉRATION DES ARTICLES ---
+// RÉCUPÉRATION DES ARTICLES
 $sql = "SELECT a.*, c.nom AS categorie_nom, u.login AS auteur_nom 
         FROM articles a 
         LEFT JOIN categories c ON a.id_categorie = c.id 
@@ -58,10 +58,10 @@ include 'menu.php';
 ?>
 
 <main class="container" style="margin-top: 40px; font-family: 'Segoe UI', sans-serif;">
-    
+
     <div style="text-align: left; margin-bottom: 35px; padding-left: 10px;">
         <h1 style="color: #2c3e50; margin-bottom: 15px; border-left: 5px solid #6D071A; padding-left: 15px; font-size: 2rem;">
-               <?php echo empty($search) ? 'Dernières Actualités' : 'Résultats pour : "'.htmlspecialchars($search).'"'; ?>
+            <?php echo empty($search) ? 'Dernières Actualités' : 'Résultats pour : "' . htmlspecialchars($search) . '"'; ?>
         </h1>
 
         <?php if ($totalArticles > 0): ?>
@@ -74,18 +74,18 @@ include 'menu.php';
     </div>
 
     <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px;">
-        
+
         <?php if (count($articles) > 0): ?>
             <?php foreach ($articles as $a): ?>
                 <article style="background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.05); display: flex; flex-direction: column; border: 1px solid #eee;">
-                    
+
                     <div style="height: 180px; overflow: hidden; background: #f8f9fa;">
                         <?php if (!empty($a['image'])): ?>
-                            <img src="uploads/<?= htmlspecialchars($a['image']) ?>" 
-                                 style="width: 100%; height: 100%; object-fit: cover;">
+                            <img src="uploads/<?= htmlspecialchars($a['image']) ?>"
+                                style="width: 100%; height: 100%; object-fit: cover;">
                         <?php else: ?>
                             <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #bbb;">
-                                 Image non disponible
+                                Image non disponible
                             </div>
                         <?php endif; ?>
                     </div>
@@ -105,7 +105,7 @@ include 'menu.php';
 
                         <div style="margin-top: auto; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f5f5f5; padding-top: 15px;">
                             <span style="font-size: 0.75em; color: #999;">
-                                 <?= date('d/m/Y', strtotime($a['date_creation'])) ?>
+                                <?= date('d/m/Y', strtotime($a['date_creation'])) ?>
                             </span>
                             <a href="article_detail.php?id=<?= $a['id'] ?>" style="color: #6D071A; text-decoration: none; font-weight: bold; font-size: 0.85em;">
                                 LIRE LA SUITE
@@ -124,34 +124,34 @@ include 'menu.php';
     </div>
 
     <?php if ($totalPages > 1): ?>
-    <div style="margin: 50px 0; display: flex; justify-content: flex-start; align-items: center; gap: 15px; padding-left: 10px;">
-        
-        <?php 
+        <div style="margin: 50px 0; display: flex; justify-content: flex-start; align-items: center; gap: 15px; padding-left: 10px;">
+
+            <?php
             // On conserve les paramètres search et id_cat dans les liens de pagination
-            $query_params = $_GET; 
-        ?>
+            $query_params = $_GET;
+            ?>
 
-        <?php if ($pageActuelle > 1): ?>
-            <?php $query_params['page'] = $pageActuelle - 1; ?>
-            <a href="?<?= http_build_query($query_params) ?>" 
-               style="padding: 8px 18px; border: 1px solid #6D071A; color: #6D071A; text-decoration: none; border-radius: 4px; font-weight: bold; font-size: 0.9em;">
-               Précédent
-            </a>
-        <?php endif; ?>
+            <?php if ($pageActuelle > 1): ?>
+                <?php $query_params['page'] = $pageActuelle - 1; ?>
+                <a href="?<?= http_build_query($query_params) ?>"
+                    style="padding: 8px 18px; border: 1px solid #6D071A; color: #6D071A; text-decoration: none; border-radius: 4px; font-weight: bold; font-size: 0.9em;">
+                    Précédent
+                </a>
+            <?php endif; ?>
 
-        <span style="font-size: 0.9em; color: #777;">
-            Page <?= $pageActuelle ?> sur <?= $totalPages ?>
-        </span>
+            <span style="font-size: 0.9em; color: #777;">
+                Page <?= $pageActuelle ?> sur <?= $totalPages ?>
+            </span>
 
-        <?php if ($pageActuelle < $totalPages): ?>
-            <?php $query_params['page'] = $pageActuelle + 1; ?>
-            <a href="?<?= http_build_query($query_params) ?>" 
-               style="padding: 8px 18px; background: #6D071A; color: white; text-decoration: none; border-radius: 4px; font-weight: bold; font-size: 0.9em;">
-               Suivant
-            </a>
-        <?php endif; ?>
-        
-    </div>
+            <?php if ($pageActuelle < $totalPages): ?>
+                <?php $query_params['page'] = $pageActuelle + 1; ?>
+                <a href="?<?= http_build_query($query_params) ?>"
+                    style="padding: 8px 18px; background: #6D071A; color: white; text-decoration: none; border-radius: 4px; font-weight: bold; font-size: 0.9em;">
+                    Suivant
+                </a>
+            <?php endif; ?>
+
+        </div>
     <?php endif; ?>
 
 </main>
